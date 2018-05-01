@@ -59,12 +59,12 @@ namespace sc{
 					++m_front;
 				}	
 
-				const reference back() const
+				const rhserence back() const
 				{
 					return &m_ptr[m_size]
 				}
 
-				const reference front() const
+				const rhserence front() const
 				{
 					return &m_ptr[front];
 				}	
@@ -231,14 +231,14 @@ namespace sc{
 	                	~iterator() = default;
 
 	                /// Copy constructor
-	                	iterator( const iterator& itr ) : m_ptr( itr.m_ptr {}
+	                	iterator( const iterator& itr ) : m_ptr( itr.m_ptr) {}
 
 	                	
-	                	iterator& operator=(const iterator& ref){
-	                		m_ptr = ref.m_ptr;
+	                	iterator& operator=(const iterator& rhs){
+	                		m_ptr = rhs.m_ptr;
 	                	} 
 
-	                	reference operator*(void) const{
+	                	rhserence operator*(void) const{
 	                		return *m_ptr;
 	                	}
 
@@ -274,17 +274,31 @@ namespace sc{
 	                		
 	                	}
 
-	                	bool operator==(const iterator& ref) const{
-	                		return m_ptr == ref.m_ptr;
+	                	bool operator==(const iterator& rhs) const{
+	                		return m_ptr == rhs.m_ptr;
 	                	}
 
-	                	bool operator!=(const iterator& ref) const{
-	                		return m_ptr != ref.m_ptr;
+	                	bool operator!=(const iterator& rhs) const{
+	                		return m_ptr != rhs.m_ptr;
 	                	}
 
-	                	iterator operator+=(){
-	                		return 
+	                	iterator operator+=(const iterator& rhs){
+	                		this->m_ptr = (this->m_ptr + rhs.m_ptr);
+	                		return *this; 
 	                	}
+
+	                	iterator operator-=(const iterator& rhs){
+	                		this->m_ptr = (this->m_ptr - rhs.m_ptr);
+	                		return *this; 
+	                	}
+
+	                	friend iterator insert( iterator pos, const T& value ){
+	                		reserve( size_type new_cap );
+	                		
+
+	                	} 
+
+
             	};
 
             	class const iterator{
