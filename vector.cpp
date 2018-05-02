@@ -1,4 +1,5 @@
 #include <utility>
+#include <cstring>
 
 namespace sc{
 
@@ -188,24 +189,41 @@ namespace sc{
 
 				// == constructors and descrutors
 				//(1)Construtor padrão que cria uma lista vazia.
-				vector(pointer ptr = nullptr): m_ptr(ptr){};
+				vector(pointer ptr = nullptr): m_ptr(ptr){}
 				
 				//(2)Constrói a lista com instâncias inseridas por padrão de contagem de T.
-				explicit vector(size_type count) : m_ptr(new count.m_ptr){};
+				explicit vector(size_type count) : m_ptr(new count.m_ptr){}
 				
 				//(3)Constrói a lista com o conteúdo do intervalo [first, last].
 				template<type InputIt>
-				vector(InputIt first, InputIt last){};
+				vector(InputIt first, InputIt last)
+				{
+					m_capacity = first - last;
+					m_size = m_capacity;
+					m_ptr = new T[m_capacity];
+
+					std::copy( first, last, &m_ptr[0] );
+				}
 				
 				//(4)Construtor de cópia. Constrói a lista com a cópia profunda do conteúdo de outra.
-				vector(const vector& other) : m_ptr ( other.m_ptr){};
+				vector(const vector& other) : m_ptr ( other.m_ptr){}
 				
 				//(5)Constrói a lista com o conteúdo da lista inicializadora init.
-				vector(std::initializer_list<T> ilist){};
+				vector(std::initializer_list<T> ilist)
+				{
+					m_capacity = ilist.size();
+					m_size = m_capacity;
+					m_ptr = new T[m_capacity]
+
+					std::copy( ilist.begin(), ilist.end(), &m_ptr[0] );
+				}
 				
 				//(6)Destrói a lista. Os destruidores dos elementos são chamados e o armazenamento usado é
 				//alocado. Note que se os elementos forem ponteiros, os objetos apontados não serão destruídos.
-				~vector() = default;
+				~vector()
+				{
+					delete [] m_ptr;
+				}
 				
 				//(7) Copiar operador de atribuição. Substitui o conteúdo por uma cópia do conteúdo de outro. (isto é
 				//os dados em outro são movidos de outro para este contêiner). outro está em um válido, mas
