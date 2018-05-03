@@ -3,65 +3,106 @@
 
 namespace sc{
 
-	 template < typename T, size_t SIZE=0 >
+	template < typename T, size_t SIZE=0 >
 	struct vector{
 
 		typedef T value_type;
 		typedef T* pointer;
 		typedef T& reference;
 		typedef size_t size_type; 
-		
+
 		public:
-		class vector
-			{
+			class iterator{
+				private:
+					pointer m_ptr;
 
-			//Membros especiais da classe.
-			private:
-				pointer m_data;
-				size_type m_front;
-				size_type m_size;
-				size_type m_capacity;
+				public:
+					typedef  std::ptrdiff_t                  difference_type;
+	                   typedef  T                               value_type;
+	                   typedef  T&                              reference;
+	                   typedef  std::bidirectional_iterator_tag iterator_category;
 
-			public:
-				//Funções comuns de listas.
-				size_type size() const
-				{
-					return m_size;
-				}
+					iterator( pointer ptr=nullptr ) : m_ptr( ptr ){}
+	                   
 
-				void clear()
-				{
-					m_size = 0;
-				}
+	            	/// Destructor
+	                ~iterator() = default;
 
-				bool empty()
-				{
-					return m_size == 0;
-				}
+	                /// Copy constructor
+	                iterator( const iterator& itr ) : m_ptr( itr.m_ptr) {}
 
-				void push_front( const T& value )
-				{
-					//Talvez seja necessário "passar" os valores para uma posição mais atrás afim de "dar espaço" para o novo elemento
-					m_data[m_front] = *value;
-				}
+	                	
+	                iterator& operator=(const iterator& rhs){
+	                	m_ptr = rhs.m_ptr;
+	               	} 
 
-				void push_back( const T& value )
-				{
-					m_data[m_size-1] = *value;
-					++m_size;
-				}
+	               	T operator*(void) const{
+	               		return *m_ptr;
+	               	}
 
-				void pop_back()
-				{
-					--m_size;
-				}	
+	               	iterator operator++(){
+	               		return ++m_ptr;
+	               	}
 
-				void pop_front()
-				{
-					++m_front;
-				}	
+	               	iterator operator++(int){
 
-				const iterator const_back() const
+	               		iterator temp( *this ){
+	               			++m_ptr;
+	               			return temp;
+	               		}
+
+	               		pointer temp2 = m_ptr;
+	               		++m_ptr;
+	               		return iterator(temp2);
+
+	               		return m_ptr++;
+
+                		++m_ptr;
+	                	
+	                	return m_ptr-1;
+	                }
+
+	                iterator operator--(){
+	                	return --m_ptr;
+	                }
+
+	                iterator operator--(int){
+	                	iterator temp( *this );
+	                	--m_ptr;
+	                	return temp;
+	                		
+	                }
+
+	                bool operator==(const iterator& rhs) const{
+	                	return m_ptr == rhs.m_ptr;
+	                }
+
+	                bool operator!=(const iterator& rhs) const{
+	                	return m_ptr != rhs.m_ptr;
+	                }
+
+	                iterator operator+=(const iterator& rhs){
+	                	this->m_ptr = (this->m_ptr + rhs.m_ptr);
+	                	return *this; 
+	                }
+
+	                iterator operator-=(const iterator& rhs){
+	                	this->m_ptr = (this->m_ptr - rhs.m_ptr);
+	                	return *this; 
+	                }
+
+	                friend iterator insert( iterator pos, const T& value ){
+	                	reserve( size_type new_cap );
+	                }
+
+	                /*class const iterator{
+            		constructor();
+					~destructor();
+            		};
+            		*/
+	            };
+//CLASSE VECTOR=================================================================================================================================================================================
+	            const iterator const_back() const
 				{
 					return iterator(&m_data[m_size]);
 				}
@@ -79,7 +120,7 @@ namespace sc{
 				iterator front() const
 				{
 					return iterator(&m_data[front]);
-				}	
+				} 
 
 				//Operações do array dinâmico
 
@@ -150,15 +191,15 @@ namespace sc{
 
 				//Sobrecarga de operadores
 
-				bool operator==( const vector& lhs, const vector& rhs ) //Provavelmente deve ser colocado um const aqui
+				bool operator==( const vector& rhs ) //Provavelmente deve ser colocado um const aqui
 				{
 					bool ig = true;
 
-					if( lhs.size() == rhs.size() )
+					if( m_size == rhs.size() )
 					{
-						for(auto i{0}; i < (int)lhs.size() ; i++)
+						for(auto i{0}; i < (int)m_size ; i++)
 						{
-							if( lhs[i] != rhs[i] )
+							if( m_data[i] != rhs[i] )
 							{
 								ig = false;
 
@@ -174,15 +215,15 @@ namespace sc{
 				}
 
 
-				bool operator!=( const vector& lhs, const vector& rhs ) //Provavelmente deve ser colocado um const aqui
+				bool operator!=( const vector& rhs ) //Provavelmente deve ser colocado um const aqui
 				{
 					bool ig = true;
 
-					if( lhs.size() == rhs.size() )
+					if( m_size == rhs.size() )
 					{
-						for(auto i{0}; i < (int)lhs.size() ; i++)
+						for(auto i{0}; i < (int)m_size ; i++)
 						{
-							if( lhs[i] == rhs[i] )
+							if( m_data[i] == rhs[i] )
 							{
 								ig = false;
 								
@@ -206,7 +247,7 @@ namespace sc{
 				explicit vector(size_type count) : m_data(new count.m_data){}
 				
 				//(3)Constrói a lista com o conteúdo do intervalo [first, last].
-				template<type InputIt>
+				template< typename InputIt >
 				vector(InputIt first, InputIt last)
 				{
 					m_capacity = first - last;
@@ -262,98 +303,12 @@ namespace sc{
 					m_size = ilist.size();
 				}
 
-				class iterator{
-					private:
-						pointer m_ptr;
-
-					public:
-						typedef  std::ptrdiff_t                  difference_type;
-	                    typedef  T                               value_type;
-	                    typedef  T*                              pointer;
-	                    typedef  T&                              reference;
-	                    typedef  std::bidirectional_iterator_tag iterator_category;
-
-						iterator( pointer ptr=nullptr ) : m_ptr( ptr ){}
-	                   
-
-	              	/// Destructor
-	                	~iterator() = default;
-
-	                /// Copy constructor
-	                	iterator( const iterator& itr ) : m_ptr( itr.m_ptr) {}
-
-	                	
-	                	iterator& operator=(const iterator& rhs){
-	                		m_ptr = rhs.m_ptr;
-	                	} 
-
-	                	rhserence operator*(void) const{
-	                		return *m_ptr;
-	                	}
-
-	                	iterator operator++(){
-	                		return ++m_ptr;
-	                	}
-
-	                	iterator operator++(int){
-
-	                		iterator temp( *this ){
-	                			++m_ptr;
-	                			return temp;
-	                		}
-
-	                		pointer temp2 = m_ptr;
-	                		++m_ptr;
-	                		return iterator(temp2);
-
-	                		return m_ptr++;
-
-	                		++m_ptr;
-	                		return m_ptr-1;
-	                	}
-
-	                	iterator operator--(){
-	                		return --m_ptr;
-	                	}
-
-	                	iterator operator--(int){
-	                		iterator temp( *this );
-	                		--m_ptr;
-	                		return temp;
-	                		
-	                	}
-
-	                	bool operator==(const iterator& rhs) const{
-	                		return m_ptr == rhs.m_ptr;
-	                	}
-
-	                	bool operator!=(const iterator& rhs) const{
-	                		return m_ptr != rhs.m_ptr;
-	                	}
-
-	                	iterator operator+=(const iterator& rhs){
-	                		this->m_ptr = (this->m_ptr + rhs.m_ptr);
-	                		return *this; 
-	                	}
-
-	                	iterator operator-=(const iterator& rhs){
-	                		this->m_ptr = (this->m_ptr - rhs.m_ptr);
-	                		return *this; 
-	                	}
-
-	                	friend iterator insert( iterator pos, const T& value ){
-	                		reserve( size_type new_cap );
-	                		
-
-	                	} 
-
-
-            	};
-
-            	class const iterator{
-            		constructor();
-					~destructor();
-            	};
-		};		
+        //Membros especiais da classe.
+		private:
+			pointer m_data;
+			size_type m_front;
+			size_type m_size;
+			size_type m_capacity;
 	};
 }
+
