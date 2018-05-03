@@ -17,7 +17,7 @@ namespace sc{
 
 			//Membros especiais da classe.
 			private:
-				pointer m_ptr;
+				pointer m_data;
 				size_type m_front;
 				size_type m_size;
 				size_type m_capacity;
@@ -42,12 +42,13 @@ namespace sc{
 				void push_front( const T& value )
 				{
 					//Talvez seja necessário "passar" os valores para uma posição mais atrás afim de "dar espaço" para o novo elemento
-					m_ptr[m_front] = *value;
+					m_data[m_front] = *value;
 				}
 
 				void push_back( const T& value )
 				{
-					m_ptr[m_size++] = *value;
+					m_data[m_size-1] = *value;
+					++m_size;
 				}
 
 				void pop_back()
@@ -60,21 +61,31 @@ namespace sc{
 					++m_front;
 				}	
 
-				const rhserence back() const
+				const iterator const_back() const
 				{
-					return &m_ptr[m_size]
+					return iterator(&m_data[m_size]);
 				}
 
-				const rhserence front() const
+				const iterator const_front() const
 				{
-					return &m_ptr[front];
+					return iterator(&m_data[front]);
+				}
+
+				iterator back() const
+				{
+					return iterator(&m_data[m_size]);
+				}
+
+				iterator front() const
+				{
+					return iterator(&m_data[front]);
 				}	
 
 				//Operações do array dinâmico
 
 				T& operator[]( size_type pos )
 				{
-					return &m_ptr[pos];
+					return &m_data[pos];
 				}
 
 				T& at( size_type pos )
@@ -84,7 +95,7 @@ namespace sc{
 						throw std::out_of_range("A posição dada está fora dos limites do Vetor");
 
 					}else{
-						return &m_ptr[pos];
+						return &m_data[pos];
 					}
 				}
 
@@ -101,12 +112,12 @@ namespace sc{
 
 						for(auto i{0}; i < (int)m_size ; i++)
 						{
-							temp[i] = m_ptr[i];
+							temp[i] = m_data[i];
 						}
 
-						delete [] m_ptr;
+						delete [] m_data;
 
-						m_ptr = temp;
+						m_data = temp;
 						m_capacity = new_cap;
 
 						//Talvez seja necessário atualizar os iteradores também
@@ -123,12 +134,12 @@ namespace sc{
 
 						for(auto i{0}; i < (int)m_size ; i++)
 						{
-							temp[i] = m_ptr;
+							temp[i] = m_data;
 						}
 
-						delete [] m_ptr;
+						delete [] m_data;
 
-						m_ptr = temp;
+						m_data = temp;
 						m_capacity = m_size;
 
 						//Também deve ser necessário atualizar os iteradores
@@ -189,10 +200,10 @@ namespace sc{
 
 				// == constructors and descrutors
 				//(1)Construtor padrão que cria uma lista vazia.
-				vector(pointer ptr = nullptr): m_ptr(ptr){}
+				vector(pointer ptr = nullptr): m_data(ptr){}
 				
 				//(2)Constrói a lista com instâncias inseridas por padrão de contagem de T.
-				explicit vector(size_type count) : m_ptr(new count.m_ptr){}
+				explicit vector(size_type count) : m_data(new count.m_data){}
 				
 				//(3)Constrói a lista com o conteúdo do intervalo [first, last].
 				template<type InputIt>
@@ -200,29 +211,36 @@ namespace sc{
 				{
 					m_capacity = first - last;
 					m_size = m_capacity;
-					m_ptr = new T[m_capacity];
+					m_data = new T[m_capacity];
 
-					std::copy( first, last, &m_ptr[0] );
+					std::copy( first, last, &m_data[0] );
 				}
 				
 				//(4)Construtor de cópia. Constrói a lista com a cópia profunda do conteúdo de outra.
-				vector(const vector& other) : m_ptr ( other.m_ptr){}
+				vector(const vector& other) : m_data ( other.m_data)
+				{
+					m_capacity = other.m_capacity;
+					m_size = other.m_size;
+					m_data = new T[m_capacity];
+
+					std::copy( &other.m_data[0], &other.m_data[other.m_size], &m_data[0] );
+				}
 				
 				//(5)Constrói a lista com o conteúdo da lista inicializadora init.
 				vector(std::initializer_list<T> ilist)
 				{
 					m_capacity = ilist.size();
 					m_size = m_capacity;
-					m_ptr = new T[m_capacity]
+					m_data = new T[m_capacity]
 
-					std::copy( ilist.begin(), ilist.end(), &m_ptr[0] );
+					std::copy( ilist.begin(), ilist.end(), &m_data[0] );
 				}
 				
 				//(6)Destrói a lista. Os destruidores dos elementos são chamados e o armazenamento usado é
 				//alocado. Note que se os elementos forem ponteiros, os objetos apontados não serão destruídos.
 				~vector()
 				{
-					delete [] m_ptr;
+					delete [] m_data;
 				}
 				
 				//(7) Copiar operador de atribuição. Substitui o conteúdo por uma cópia do conteúdo de outro. (isto é
@@ -230,7 +248,7 @@ namespace sc{
 				//estado não especificado posteriormente.
 				vector& operator=(const vector& other)
 				{
-					std::copy( &other.m_ptr[0], &other.m_ptr[other.m_size], &m_ptr[0]);
+					std::copy( &other.m_data[0], &other.m_data[other.m_size], &m_data[0]);
 
 					m_size = other.m_size;
 				}
@@ -239,12 +257,15 @@ namespace sc{
 				//Os dois métodos de atribuição operator = () (overloaded) retornam * this no final,
 				vector& operator=(std::initializer_list<T> ilist)
 				{
-					std::copy( ilist.begin(), ilist.end(), &m_ptr[0]);
+					std::copy( ilist.begin(), ilist.end(), &m_data[0]);
 
 					m_size = ilist.size();
 				}
 
 				class iterator{
+					private:
+						pointer m_ptr;
+
 					public:
 						typedef  std::ptrdiff_t                  difference_type;
 	                    typedef  T                               value_type;
