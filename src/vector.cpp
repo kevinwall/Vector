@@ -113,9 +113,11 @@ namespace sc{
 	                		
 	                	} 
 
-	               iterator insert( iterator pos, const T& value ){
+	               iterator insert( iterator pos, std::initializer_list<T> ilist ){
 	                		
-	                		if( illist.size() > m_capacity - m_size){
+	                		int j = 0;
+
+	                		if( ilist.size() > m_capacity - m_size){
 	                			T* temp = new T[m_capacity + ilist.size()];
 
 	             				for( auto i{0} ; i < m_capacity + ilist.size() ; i++){
@@ -124,8 +126,9 @@ namespace sc{
 
 	             				delete [] m_ptr;
 
-	             				for( auto i{0} ; i<= pos ; i++){
-	             					temp[pos-1] = value;
+	             				for( auto i{ilist.begin()} ; i<= ilist.end() ; i++){
+	             					temp[j] = *i;
+	             					j++;
 	             				}
 
 	             				m_ptr = temp;
@@ -285,7 +288,15 @@ namespace sc{
 				vector(pointer ptr = nullptr): m_data(ptr){}
 				
 				//(2)Constrói a lista com instâncias inseridas por padrão de contagem de T.
-				explicit vector(size_type count) : m_data(new count.m_data){}
+				explicit vector(size_type count)
+				{
+					m_data = new T[count];
+
+					for( auto i{0}; i < count; i++)
+					{
+						m_data[i] = i;
+					}
+				}
 				
 				//(3)Constrói a lista com o conteúdo do intervalo [first, last].
 				template< typename InputIt >
@@ -333,6 +344,8 @@ namespace sc{
 					std::copy( &other.m_data[0], &other.m_data[other.m_size], &m_data[0]);
 
 					m_size = other.m_size;
+
+					return(*this);
 				}
 				
 				//(8) Substitui o conteúdo por aqueles identificados pela lista de inicializadores ilist.
@@ -342,6 +355,8 @@ namespace sc{
 					std::copy( ilist.begin(), ilist.end(), &m_data[0]);
 
 					m_size = ilist.size();
+
+					return(*this);
 				}
 
         //Membros especiais da classe.
