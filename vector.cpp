@@ -150,8 +150,8 @@ namespace sc{
 							if( lhs[i] != rhs[i] )
 							{
 								ig = false;
-								break;
-								//Não sei se isso funciona;
+
+								return ig;
 							}
 						}
 
@@ -174,8 +174,8 @@ namespace sc{
 							if( lhs[i] == rhs[i] )
 							{
 								ig = false;
-								break;
-								//Não sei se isso funciona;
+								
+								return ig;
 							}
 						}
 						
@@ -228,11 +228,21 @@ namespace sc{
 				//(7) Copiar operador de atribuição. Substitui o conteúdo por uma cópia do conteúdo de outro. (isto é
 				//os dados em outro são movidos de outro para este contêiner). outro está em um válido, mas
 				//estado não especificado posteriormente.
-				vector& operator=(const vector& other){};
+				vector& operator=(const vector& other)
+				{
+					std::copy( &other.m_ptr[0], &other.m_ptr[other.m_size], &m_ptr[0]);
+
+					m_size = other.m_size;
+				}
 				
 				//(8) Substitui o conteúdo por aqueles identificados pela lista de inicializadores ilist.
 				//Os dois métodos de atribuição operator = () (overloaded) retornam * this no final,
-				vector& operator=(std::initializer_list<T> ilist){};
+				vector& operator=(std::initializer_list<T> ilist)
+				{
+					std::copy( ilist.begin(), ilist.end(), &m_ptr[0]);
+
+					m_size = ilist.size();
+				}
 
 				class iterator{
 					public:
