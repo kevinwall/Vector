@@ -1,5 +1,8 @@
 #include <utility>
+#include <iostream>
+#include <algorithm>
 #include <cstring>
+#include <initializer_list>
 
 namespace sc{
 
@@ -272,7 +275,7 @@ namespace sc{
 				{
 					m_capacity = ilist.size();
 					m_size = m_capacity;
-					m_data = new T[m_capacity]
+					m_data = new T[m_capacity];
 
 					std::copy( ilist.begin(), ilist.end(), &m_data[0] );
 				}
