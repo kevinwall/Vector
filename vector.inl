@@ -1,12 +1,4 @@
-#include <utility>
-#include <iostream>
-#include <algorithm>
-#include <cstring>
-#include <initializer_list>
-
-namespace sc{
-
-	template < typename T, size_t SIZE=0 >
+template < typename T, size_t SIZE=0 >
 	struct vector{
 
 		typedef T value_type;
@@ -35,7 +27,8 @@ namespace sc{
 	                iterator( const iterator& itr ) : m_ptr( itr.m_ptr) {}
 
 	                	
-	                iterator& operator=(const iterator& rhs){
+	                template< typename T >
+	                typename vector<T>::iterator vector<T>::iterator::&operator=(const iterator& rhs){
 	                	m_ptr = rhs.m_ptr;
 	               	} 
 
@@ -43,11 +36,13 @@ namespace sc{
 	               		return *m_ptr;
 	               	}
 
-	               	iterator operator++(){
+	               	template< typename T >
+	               	typename vector<T>::iterator vector<T>::iterator:: operator++(){
 	               		return ++m_ptr;
 	               	}
 
-	               	iterator operator++(int){
+	               	template< typename T >
+        			typename vector<T>::iterator vector<T>::iterator:: operator++(int){
 
 	               		iterator temp( *this ){
 	               			++m_ptr;
@@ -65,11 +60,13 @@ namespace sc{
 	                	return m_ptr-1;
 	                }
 
-	                iterator operator--(){
+	                template< typename T >
+        			typename vector<T>::iterator vector<T>::iterator:: operator--(){
 	                	return --m_ptr;
 	                }
 
-	                iterator operator--(int){
+	                template< typename T >
+        			typename vector<T>::iterator vector<T>::iterator:: operator--(int){
 	                	iterator temp( *this );
 	                	--m_ptr;
 	                	return temp;
@@ -84,17 +81,20 @@ namespace sc{
 	                	return m_ptr != rhs.m_ptr;
 	                }
 
-	                iterator operator+=(const iterator& rhs){
+	                template< typename T >
+        			typename vector<T>::iterator vector<T>::iterator:: operator+=(const iterator& rhs){
 	                	this->m_ptr = (this->m_ptr + rhs.m_ptr);
 	                	return *this; 
 	                }
 
-	                iterator operator-=(const iterator& rhs){
+	                template< typename T >
+        			typename vector<T>::iterator vector<T>::iterator:: operator-=(const iterator& rhs){
 	                	this->m_ptr = (this->m_ptr - rhs.m_ptr);
 	                	return *this; 
 	                }
 
-	                iterator insert( iterator pos, const T& value ){
+	                template< typename T >
+        			typename vector<T>::iterator vector<T>::iterator::insert( iterator pos, const T& value ){
 	                		
 	                		if( m_capacity > m_size){
 	                			*m_ptr = *value;
@@ -113,7 +113,8 @@ namespace sc{
 	                		
 	                	} 
 
-	               iterator insert( iterator pos, const T& value ){
+	               template< typename T >
+        			typename vector<T>::iterator vector<T>::iterator:: insert( iterator pos, const T& value ){
 	                		
 	                		if( illist.size() > m_capacity - m_size){
 	                			T* temp = new T[m_capacity + ilist.size()];
@@ -143,22 +144,26 @@ namespace sc{
             		*/
 	            };
 //CLASSE VECTOR=================================================================================================================================================================================
-	            const iterator const_back() const
+	            const template< typename T >
+        		typename vector<T>::iterator vector<T>::iterator:: const_back() const
 				{
 					return iterator(&m_data[m_size]);
 				}
 
-				const iterator const_front() const
+				const template< typename T >
+        		typename vector<T>::iterator vector<T>::iterator:: const_front() const
 				{
 					return iterator(&m_data[front]);
 				}
 
-				iterator back() const
+				template< typename T >
+        		typename vector<T>::iterator vector<T>::iterator:: back() const
 				{
 					return iterator(&m_data[m_size]);
 				}
 
-				iterator front() const
+				template< typename T >
+        		typename vector<T>::iterator vector<T>::iterator:: front() const
 				{
 					return iterator(&m_data[front]);
 				} 
@@ -351,5 +356,3 @@ namespace sc{
 			size_type m_size;
 			size_type m_capacity;
 	};
-}
-
