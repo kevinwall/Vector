@@ -36,8 +36,10 @@ namespace sc{
 							bool operator!=(const iterator& rhs) ;
 							iterator operator+=(const iterator& rhs);
 							iterator operator-=(const iterator& rhs);
-							iterator insert( iterator pos, const T& value );
-							iterator insert( iterator pos, const T& value );
+							iterator insert( iterator pos, InItr first, InItr last);
+							iterator insert( iterator pos, std::initializer_list<T> ilist );
+							iterator erase(iterator first, iterator last);
+							iterator erase(iterator pos);
 							const iterator const_back();
 							const iterator const_front();
 							iterator back();

@@ -20,7 +20,7 @@ namespace sc{
 					pointer m_ptr;
 
 				public:
-					typedef  std::ptrdiff_t                  difference_type;
+					   typedef  std::ptrdiff_t                  difference_type;
 	                   typedef  T                               value_type;
 	                   typedef  T&                              reference;
 	                   typedef  std::bidirectional_iterator_tag iterator_category;
@@ -94,24 +94,19 @@ namespace sc{
 	                	return *this; 
 	                }
 
-	                iterator insert( iterator pos, const T& value ){
-	                		
-	                		if( m_capacity > m_size){
-	                			*m_ptr = *value;
-	             			
-	             				}else{
-	             				T* temp = new T[2*m_capacity];
-	             				
-	             				for(auto i{0} ; i < )
+	                template < typename InItr>
+	                iterator insert( iterator pos, InItr first, InItr last)
+	                {
+	               		if((last - first) > (m_capacity - m_size))
+	               		{
+	               			T* temp = new T[m_size+(first-last)];
 
-	             				delete [] m_ptr;
-								
-
-	             				}
-
-
-	                		
-	                	} 
+	               			for(auto i{0}; i < (int)m_size; i++)
+	               			{
+	               				temp[i] = m_data[i];
+	               			}
+	               		}
+	                } 
 
 	               iterator insert( iterator pos, std::initializer_list<T> ilist ){
 	                		
@@ -120,24 +115,67 @@ namespace sc{
 	                		if( ilist.size() > m_capacity - m_size){
 	                			T* temp = new T[m_capacity + ilist.size()];
 
-	             				for( auto i{0} ; i < m_capacity + ilist.size() ; i++){
+	             				for( auto i{0} ; i < (int)m_size ; i++){
 	             					temp[i] = m_ptr[i];
 	             				}
 
 	             				delete [] m_ptr;
 
-	             				for( auto i{ilist.begin()} ; i<= ilist.end() ; i++){
-	             					temp[j] = *i;
+	             				for( auto k{ilist.begin()} ; k<= ilist.end() ; k++){
+	             					temp[ilist.size()+j-1] = *k;
 	             					j++;
 	             				}
 
 	             				m_ptr = temp;
 
+	             			}else{
+	             				for( auto i{ilist.begin()} ; i<= ilist.end() ; i++){
+	             					temp[m_size + j] = *i;
+	             					j++;
+	             				}
+
+	             				m_ptr = temp;
+	             			}
+
 	             				return (*this);
 
-	                		}
 	                		
-	                	} 
+	                		
+	                	}
+	                iterator erase(iterator first, iterator last)
+					{
+						iterator temp = &m_data[first - m_data];
+
+						if( first == last)
+						{
+							return temp;
+						}
+
+						while(first != last)
+						{
+							delete *first;
+							first++;
+						}
+
+						std::memmove(temp, last, (m_size -(first - m_data)) * sizeof(T) );
+
+						m_size -= last - first;
+
+						return temp;
+					}
+
+	                iterator erase(iterator pos)
+					{
+						iterator temp = &m_data[pos - m_data];
+
+						delete *temp;
+
+						std::memmove(temp , temp+1, (m_size - (m_data - temp) -1 ) * sizeof(T) );
+
+						--m_size;
+
+						return temp;
+					} 
 
 	                /*class const iterator{
             		constructor();
