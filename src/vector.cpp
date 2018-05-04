@@ -184,47 +184,57 @@ namespace sc{
             		*/
 	            };
 //CLASSE VECTOR=================================================================================================================================================================================
-	            const iterator const_back() const
+	        	const T& back() const
 				{
-					return iterator(&m_data[m_size]);
+					return m_data[m_size];
 				}
 
-				const iterator const_front() const
+				const T& front() const
 				{
-					return iterator(&m_data[front]);
-				}
-
-				iterator back() const
-				{
-					return iterator(&m_data[m_size]);
-				}
-
-				iterator front() const
-				{
-					return iterator(&m_data[front]);
+					return m_data[0];
 				} 
 
 				//Operações do array dinâmico
 
-				T& operator[]( size_type pos )
+				reference operator[]( size_type pos )
 				{
-					return &m_data[pos];
+					return m_data[pos];
 				}
 
-				T& at( size_type pos )
+				reference at( size_type pos )
 				{
-					if( pos > m_size || pos < m_front )
+					if( pos >= m_size || pos < 0 )
 					{
 						throw std::out_of_range("A posição dada está fora dos limites do Vetor");
 
 					}else{
-						return &m_data[pos];
+						return m_data[pos];
 					}
+				}
+
+				size_type size() const
+				{
+					return m_size;
 				}
 
 				size_type capacity() const
 				{
 					return m_capacity;
+				}
+
+				bool empty() const
+				{
+					return m_size == 0;
+				}
+
+				void clear()
+				{
+					for(auto i{0}; i < (int)m_size; i++)
+					{
+						m_data[i].~T();
+					}
+
+					m_size = 0;
 				}	
 
 				void reserve( size_type new_cap )
@@ -242,10 +252,6 @@ namespace sc{
 
 						m_data = temp;
 						m_capacity = new_cap;
-
-						//Talvez seja necessário atualizar os iteradores também
-						//RETORNAR AQUI APÓS OS MESMOS SEREM IMPLEMENTADOS
-						//Talvez também seja interessante a adição de uma mensagem de aviso caso o new_cap seja menor ou igual a m_capacity
 					}
 				}
 
@@ -264,13 +270,58 @@ namespace sc{
 
 						m_data = temp;
 						m_capacity = m_size;
-
-						//Também deve ser necessário atualizar os iteradores
-						//RETORNAR AQUI APÓS OS MESMOS SEREM IMPLEMENTADOS
-
 					}
 				}
 
+    			void push_front(const T& value)
+    			{
+       				reserve(m_size+1);
+
+       				T* temp = new T[m_size];
+
+        			for(auto i{0}; i < m_size; i++)
+        			{
+        				temp[i] = m_data[i];
+        			}
+        			clear();
+
+        			m_size = m_size + 1;
+        			m_data[0] = value;
+        			
+        			for(auto i{1}; i < m_size)
+        			{
+        				m_data[i] = temp[i-1];
+        			}
+
+        			delete [] temp;
+    			}
+
+    			void push_back(const T& value)
+    			{
+        			if(m_size < m_capacity)
+        			{
+        				m_data[m_size] = value;
+        			}else{
+        				reserve(m_capacity+1);
+        				m_data[m_size] = value;
+        			}
+    			}
+
+    			void pop_back()
+    			{
+    				m_size--;
+    			}
+
+    			void pop_front()
+    			{
+    				T* temp = new T[m_size];
+
+       				std::memmove(temp, &m_data[1], m_size*sizeof(T));
+
+        			m_size--;
+
+        			std::memmove(m_data, temp, m_size*sizeof(T));
+    			}
 				//Sobrecarga de operadores
 
 				bool operator==( const vector& rhs ) //Provavelmente deve ser colocado um const aqui
@@ -328,12 +379,7 @@ namespace sc{
 				//(2)Constrói a lista com instâncias inseridas por padrão de contagem de T.
 				explicit vector(size_type count)
 				{
-					m_data = new T[count];
-
-					for( auto i{0}; i < count; i++)
-					{
-						m_data[i] = i;
-					}
+					m_size = count;
 				}
 				
 				//(3)Constrói a lista com o conteúdo do intervalo [first, last].
@@ -343,12 +389,18 @@ namespace sc{
 					m_capacity = first - last;
 					m_size = m_capacity;
 					m_data = new T[m_capacity];
+					int i = 0;
 
-					std::copy( first, last, &m_data[0] );
+					while(first != last)
+					{
+						m_data[i] = *first;
+						i++;
+						first++;
+					}
 				}
 				
 				//(4)Construtor de cópia. Constrói a lista com a cópia profunda do conteúdo de outra.
-				vector(const vector& other) : m_data ( other.m_data)
+				vector(const vector& other)
 				{
 					m_capacity = other.m_capacity;
 					m_size = other.m_size;
@@ -369,10 +421,7 @@ namespace sc{
 				
 				//(6)Destrói a lista. Os destruidores dos elementos são chamados e o armazenamento usado é
 				//alocado. Note que se os elementos forem ponteiros, os objetos apontados não serão destruídos.
-				~vector()
-				{
-					delete [] m_data;
-				}
+				~vector() = default;
 				
 				//(7) Copiar operador de atribuição. Substitui o conteúdo por uma cópia do conteúdo de outro. (isto é
 				//os dados em outro são movidos de outro para este contêiner). outro está em um válido, mas
@@ -400,7 +449,6 @@ namespace sc{
         //Membros especiais da classe.
 		private:
 			pointer m_data;
-			size_type m_front;
 			size_type m_size;
 			size_type m_capacity;
 	};

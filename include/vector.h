@@ -42,18 +42,25 @@ namespace sc{
 							iterator erase(iterator pos);
 							const iterator const_back();
 							const iterator const_front();
-							iterator back();
-							iterator front();
-							T& operator[]( size_type pos );
-							T& at( size_type pos );
-							size_type capacity() ;
+							const T& back();
+							const T& front();
+							reference operator[]( size_type pos );
+							reference at( size_type pos );
+							size_type size();
+							size_type capacity();
+							bool empty();
+							void clear();
 							void reserve( size_type new_cap );
 							void shrink_to_fit();
+							void push_front(const T& value);
+							void push_back(const T& value);
+							void pop_back();
+							void pop_front();
 							bool operator==( const vector& rhs );
 							bool operator!=( const vector& rhs );
 							vector(pointer ptr = nullptr);
 							explicit vector(size_type count);
-
+							vector(InputIt first, InputIt last);
 							vector(const vector& other); 
 							vector(std::initializer_list<T> ilist);
 							~vector();
@@ -62,7 +69,6 @@ namespace sc{
 						
 						private:
 							pointer m_data;
-							size_type m_front;
 							size_type m_size;
 							size_type m_capacity;
 	};
