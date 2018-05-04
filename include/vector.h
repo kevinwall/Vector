@@ -56,6 +56,13 @@ namespace sc{
 							void push_back(const T& value);
 							void pop_back();
 							void pop_front();
+							iterator begin();
+							iterator end();
+							const_iterator cbegin() const;
+							const_iterator cend() const;
+							iterator insert(iterator pos, const T& value);
+							iterator insert( iterator pos, InItr first, InItr last);
+							iterator insert(iterator pos, std::initializer_list<T> ilist);
 							bool operator==( const vector& rhs );
 							bool operator!=( const vector& rhs );
 							vector(pointer ptr = nullptr);

@@ -322,6 +322,103 @@ namespace sc{
 
         			std::memmove(m_data, temp, m_size*sizeof(T));
     			}
+
+    			iterator begin()
+    			{
+            		return iterator(&m_data[0]);
+    			}
+
+    			iterator end()
+    			{
+            		return iterator(&m_data[m_size]);
+    			}
+
+    			const_iterator cbegin() const
+    			{
+        			return const_iterator(&m_data[0]);
+    			}
+
+				const_iterator cend() const
+    			{
+        			return const_iterator(&m_data[m_size]);
+    			}
+
+    			iterator insert(iterator pos, const T& value)
+    			{
+        			auto i = m_size+1;
+        			reserve(i);
+
+       				iterator aux = begin();
+
+        			auto index = (std::distance(&aux, &pos)/m_size*sizeof(T))-3*sizeof(T);
+
+        			value_type new_vector [m_size];
+
+        			std::memmove(new_vector, m_data[index], m_size*sizeof(T));
+
+        			if(index < m_size){
+            			m_data[index] = value;
+        			}
+
+        			std::memmove(&m_data[index+1], new_vector, m_size*sizeof(T));
+
+        			return pos;
+    			}
+    			template <typename InItr>
+      			iterator insert( iterator pos, InItr first, InItr last)
+      			{
+            		size_type i = 0;
+					auto ini(first);
+
+					while(ini != last)
+					{
+						i++;
+						ini++;
+					}
+
+					auto new_cap = i + m_size;
+					reserve(new_cap);
+
+					iterator aux = begin();
+					auto index = (std::distance(&aux, &pos)/m_size*sizeof(T))-3*sizeof(T);
+
+					value_type new_vector [m_size];
+
+					std::memmove(new_vector, &m_data[index], m_size*sizeof(T));
+
+					while(first != last)
+					{
+						m_data[index] = *first;
+						index++;
+						first++;
+					}
+
+					std::memmove(&m_data[index], new_vector, m_size*sizeof(T));
+					
+            		return pos;
+   				}
+
+    			iterator insert(iterator pos, std::initializer_list<T> ilist)
+    			{
+        			auto i = m_size + ilist.size();
+        			reserve(i);
+
+        			iterator aux = begin();
+
+        			auto index = (std::distance(&aux, &pos)/m_size*sizeof(T))-3*sizeof(T);
+
+        			value_type new_vector [m_size];
+
+        			std::memmove(new_vector, m_data, m_size*sizeof(T));
+
+        			if(index < m_size){
+            			std::copy(ilist.begin(), ilist.end(), &m_data[index]);
+       				}
+       				
+        			std::memmove(&m_data[index+ilist.size()], new_vector, m_size*sizeof(T));
+
+        			return pos;
+    			}
 				//Sobrecarga de operadores
 
 				bool operator==( const vector& rhs ) //Provavelmente deve ser colocado um const aqui
