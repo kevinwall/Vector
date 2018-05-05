@@ -395,7 +395,38 @@ template < typename T, size_t SIZE=0 >
         			std::memmove(&m_data[index+ilist.size()], new_vector, m_size*sizeof(T));
 
         			return pos;
-    			}			
+    			}	
+
+    			template<typename T>
+    			typename vector<T>::iterator vector<T>:: erase( typename vector<T>::iterator first, typename vector<T>::iterator last ){
+    					
+    				auto i(0),j(0);
+    				value_type new_vector [m_size];
+
+    				assert(first <= last);
+					assert(last <= cend());
+					assert(first < cend());
+
+					if (first == last) {
+						return begin() + std::distance(cbegin(), first);
+					}else{
+						if(m_data[i] != *first){
+							new_vector[j] = m_data[i];
+							j++;
+						}else{
+							m_size--;
+						}
+						i++;
+						first++;
+					}
+					return first;
+    			}
+
+    			template<typename T>
+    			typename vector<T>::iterator vector<T>::erase( typename vector<T>::iterator pos ){
+    				assert(pos < cend());
+    				return erase(pos,pos+1);
+    			}		
 
 				//Sobrecarga de operadores
 
