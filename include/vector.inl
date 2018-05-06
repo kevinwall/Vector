@@ -131,7 +131,8 @@ template < typename T, size_t SIZE=0 >
 	             				m_ptr = temp;
 	             			}
 	                		
-	                	}
+	                	} 
+
 	                /*class const iterator{
             		constructor();
 					~destructor();

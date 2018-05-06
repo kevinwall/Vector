@@ -166,53 +166,6 @@ namespace sc{
 						return temp;
 					}
 
-    				void assign( size_type count, const T& value )
-    				{
-
-        				for (auto i{0}; i< count; i++)
-        				{
-            				m_data[i] = value;
-        				}
-
-        					m_size = count;
-    				
-    				}
-
-    				template <typename InItr>
-					void assign(InItr first, InItr last)
-					{
-            			size_type list_size = 0;
-
-            			while(first != last)
-            			{
-
-                			m_data[list_size] = *first;
-                			first++;
-                			list_size++;
-            				
-            			}
-            				
-            			m_size = list_size;
-						
-					}
-
-    				void assign(std::initializer_list<T> ilist)
-    				{
-        				//std::copy(ilist.begin(), ilist.end(), &m_data[0]);
-        				auto pointer_list = ilist.begin();
-        				int i = 0;
-
-        				while(pointer_list != ilist.end())
-        				{
-        					m_data[i] = *pointer_list;
-        					pointer_list++;
-        					i++;
-        				}
-
-        				m_size = ilist.size();
-    					
-    				} 
-
 	                /*class const iterator{
             		constructor();
 					~destructor();
@@ -584,8 +537,8 @@ namespace sc{
         //Membros especiais da classe.
 		private:
 			pointer m_data;
-			size_type m_size;
-			size_type m_capacity;
+			size_type m_size = 0;
+			size_type m_capacity = 0;
 	};
 }
 
