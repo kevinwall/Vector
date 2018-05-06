@@ -1,38 +1,23 @@
-template < typename T, size_t SIZE=0 >
-	struct vector{
-
-		typedef T value_type;
-		typedef T* pointer;
-		typedef T& reference;
-		typedef size_t size_type; 
-
-		public:
-			class iterator{
-				private:
-					pointer m_ptr;
-
-				public:
-					typedef  std::ptrdiff_t                  difference_type;
-	                   typedef  T                               value_type;
-	                   typedef  T&                              reference;
-	                   typedef  std::bidirectional_iterator_tag iterator_category;
-
-					iterator( pointer ptr=nullptr ) : m_ptr( ptr ){}
+	
+					template<typename T>
+					vector<T>::iterator::iterator( pointer ptr ) : m_ptr( ptr ){}
 	                   
 
 	            	/// Destructor
-	                ~iterator() = default;
+	            	template<typename T>
+	                vector<T>::iterator::~iterator() = default;
 
 	                /// Copy constructor
-	                iterator( const iterator& itr ) : m_ptr( itr.m_ptr) {}
+	                template<typename T>
+	                vector<T>::iterator::iterator( const iterator& itr ) : m_ptr( itr.m_ptr) {}
 
 	                	
 	                template< typename T >
-	                typename vector<T>::iterator vector<T>::iterator::&operator=(const iterator& rhs){
+	                typename vector<T>::iterator& vector<T>::iterator::operator=(const iterator& rhs){
 	                	m_ptr = rhs.m_ptr;
 	               	} 
-
-	               	T operator*(void) const{
+	               	template<typename T>
+	               	T vector<T>::iterator::operator*(void) const{
 	               		return *m_ptr;
 	               	}
 
@@ -44,20 +29,9 @@ template < typename T, size_t SIZE=0 >
 	               	template< typename T >
         			typename vector<T>::iterator vector<T>::iterator:: operator++(int){
 
-	               		iterator temp( *this ){
-	               			++m_ptr;
-	               			return temp;
-	               		}
-
 	               		pointer temp2 = m_ptr;
 	               		++m_ptr;
 	               		return iterator(temp2);
-
-	               		return m_ptr++;
-
-                		++m_ptr;
-	                	
-	                	return m_ptr-1;
 	                }
 
 	                template< typename T >
@@ -72,12 +46,12 @@ template < typename T, size_t SIZE=0 >
 	                	return temp;
 	                		
 	                }
-
-	                bool operator==(const iterator& rhs) const{
+	                template< typename T >
+	                bool vector<T>::iterator::operator==(const iterator& rhs) const{
 	                	return m_ptr == rhs.m_ptr;
 	                }
-
-	                bool operator!=(const iterator& rhs) const{
+	                template< typename T >
+	                bool vector<T>::iterator::operator!=(const iterator& rhs) const{
 	                	return m_ptr != rhs.m_ptr;
 	                }
 
@@ -99,7 +73,6 @@ template < typename T, size_t SIZE=0 >
 					~destructor();
             		};
             		*/
-	            };
 //CLASSE VECTOR=================================================================================================================================================================================
 	  
 				template< typename T >
@@ -207,7 +180,7 @@ template < typename T, size_t SIZE=0 >
 
        				T* temp = new T[m_size];
 
-        			for(auto i{0}; i < m_size; i++)
+        			for(auto i{0}; i < (int)m_size; i++)
         			{
         				temp[i] = m_data[i];
         			}
@@ -216,7 +189,7 @@ template < typename T, size_t SIZE=0 >
         			m_size = m_size + 1;
         			m_data[0] = value;
         			
-        			for(auto i{1}; i < m_size)
+        			for(auto i{1}; i < (int)m_size; i++)
         			{
         				m_data[i] = temp[i-1];
         			}
@@ -266,6 +239,7 @@ template < typename T, size_t SIZE=0 >
             		return iterator(&m_data[m_size]);
     			}
 
+    			/*
     			template <typename T>
     			typename vector<T>::const_iterator vector<T>::cbegin(void) const
     			{
@@ -277,6 +251,7 @@ template < typename T, size_t SIZE=0 >
     			{
         			return const_iterator(&m_data[m_size]);
     			} 
+				*/
 
     			template <typename T>
     			typename vector<T>::iterator vector<T>::insert(typename vector<T>::iterator pos, const T& value)
@@ -338,7 +313,7 @@ template < typename T, size_t SIZE=0 >
    				}
 
    				template< typename T >
-        			typename vector<T>::iterator vector<T>::iterator:: insert( iterator pos, std::initializer_list<T> ilist ){
+        			typename vector<T>::iterator vector<T>::insert( iterator pos, std::initializer_list<T> ilist ){
 	                		
 	                		int j = 0;
 
@@ -346,25 +321,31 @@ template < typename T, size_t SIZE=0 >
 	                			T* temp = new T[m_capacity + ilist.size()];
 
 	             				for( auto i{0} ; i < (int)m_size ; i++){
-	             					temp[i] = m_ptr[i];
+	             					temp[i] = m_data[i];
 	             				}
 
-	             				delete [] m_ptr;
+	             				delete [] m_data;
 
 	             				for( auto k{ilist.begin()} ; k<= ilist.end() ; k++){
 	             					temp[ilist.size()+j-1] = *k;
 	             					j++;
 	             				}
 
-	             				m_ptr = temp;
+	             				m_data = temp;
+
+	             				return m_data;
 
 	             			}else{
+	             				T* temp = new T[m_capacity + ilist.size()];
+
 	             				for( auto i{ilist.begin()} ; i<= ilist.end() ; i++){
 	             					temp[m_size + j] = *i;
 	             					j++;
 	             				}
 
-	             				m_ptr = temp;
+	             				m_data = temp;
+
+	             				return m_data;
 	             			}
 	                		
 	                	} 
@@ -377,11 +358,11 @@ template < typename T, size_t SIZE=0 >
     				value_type new_vector [m_size];
 
     				assert(first <= last);
-					assert(last <= cend());
-					assert(first < cend());
+					assert(last <= end());
+					assert(first < end());
 
 					if (first == last) {
-						return begin() + std::distance(cbegin(), first);
+						return begin() + std::distance(begin(), first);
 					}else{
 						if(m_data[i] != *first){
 							new_vector[j] = m_data[i];
@@ -397,12 +378,12 @@ template < typename T, size_t SIZE=0 >
 
     			template<typename T>
     			typename vector<T>::iterator vector<T>::erase( typename vector<T>::iterator pos ){
-    				assert(pos < cend());
+    				assert(pos < end());
     				return erase(pos,pos+1);
     			}	
 
     			template<typename T>
-    			typename vector<T>::iterator vector<T>::assign(typename vector<T>::size_type count, const T & value){
+    			void vector<T>::assign(typename vector<T>::size_type count, const T & value){
         			for (size_type i = 0; i< count; i++){
             			m_data[i] = value;
         			}
@@ -432,8 +413,8 @@ template < typename T, size_t SIZE=0 >
         		}
 
 				//Sobrecarga de operadores
-
-				bool operator==( const vector& rhs ) //Provavelmente deve ser colocado um const aqui
+        		template<typename T>
+				bool vector<T>::operator==( const vector& rhs ) const//Provavelmente deve ser colocado um const aqui
 				{
 					bool ig = true;
 
@@ -456,8 +437,8 @@ template < typename T, size_t SIZE=0 >
 					return ig;
 				}
 
-
-				bool operator!=( const vector& rhs ) //Provavelmente deve ser colocado um const aqui
+				template<typename T>
+				bool vector<T>::operator!=( const vector& rhs ) const //Provavelmente deve ser colocado um const aqui
 				{
 					bool ig = true;
 
@@ -484,7 +465,7 @@ template < typename T, size_t SIZE=0 >
 				// == constructors and descrutors
 				//(1)Construtor padrão que cria uma lista vazia.
 				template <typename T>
-				vector<T>::vector(void): m_data(ptr){}
+				vector<T>::vector(pointer ptr): m_data(ptr){}
 				
 				//(2)Constrói a lista com instâncias inseridas por padrão de contagem de T.
 				template <typename T>
@@ -498,17 +479,16 @@ template < typename T, size_t SIZE=0 >
 				template< typename InputIt >
 				vector<T>::vector(InputIt first, InputIt last)
 				{
-					m_capacity = first - last;
-					m_size = m_capacity;
-					m_data = new T[m_capacity];
-					int i = 0;
-
-					while(first != last)
-					{
-						m_data[i] = *first;
-						i++;
-						first++;
-					}
+					    int i = 0;
+      					m_size = 0;
+      					
+      					while(first != last)
+      					{
+        					m_data[i] = *first;
+       						i++;
+        					m_size++;
+        					first++;
+						}
 				}
 				
 				//(4)Construtor de cópia. Constrói a lista com a cópia profunda do conteúdo de outra.
@@ -536,7 +516,7 @@ template < typename T, size_t SIZE=0 >
 				//(6)Destrói a lista. Os destruidores dos elementos são chamados e o armazenamento usado é
 				//alocado. Note que se os elementos forem ponteiros, os objetos apontados não serão destruídos.
 				template <typename T>
-				vector<T>~vector(void) = default;
+				vector<T>::~vector(void) = default;
 				
 				
 				//(7) Copiar operador de atribuição. Substitui o conteúdo por uma cópia do conteúdo de outro. (isto é
@@ -560,9 +540,3 @@ template < typename T, size_t SIZE=0 >
 					m_size = ilist.size();
 				}
 
-        //Membros especiais da classe.
-		private:
-			pointer m_data;
-			size_type m_size;
-			size_type m_capacity;
-	};

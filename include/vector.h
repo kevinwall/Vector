@@ -1,5 +1,5 @@
-#ifndef vector.h
-#define vector.h
+#ifndef vector_h
+#define vector_h
 
 #include <utility>
 #include <iostream>
@@ -8,11 +8,13 @@
 #include <initializer_list>
 #include <iterator> // std::distance
 
+
 namespace sc{
+	template<typename T>
 	/**@title Struct vector no qual comporta todas as funções necessárias para sua construção e também da classe iterator*/
 	struct vector{
 		/**@brief tipos definidos para variaves futuras usadas na programação abstrata*/
-		typedef T value_type;
+				typedef T value_type;
 				typedef T* pointer;
 				typedef T& reference;
 				typedef size_t size_type;
@@ -49,7 +51,7 @@ namespace sc{
 						 	* @param valor vazio
 						 	* @return O próprio iterator*/
 
-							T operator*(void) ;
+							T operator*(void) const;
 							
 							/**@title Operador ++iterator 
 						 	* @param valor vazio
@@ -78,14 +80,13 @@ namespace sc{
 							/**@title Operador == iterator
 						 	* @param const iterator& rhs
 						 	* @return true ou false */
-
-							bool operator==(const iterator& rhs) ;
+							bool operator==(const iterator& rhs) const;
 							
 							/**@title Operador != iterator
 						 	* @param const iterator& rhs
 						 	* @return true ou false */
 
-							bool operator!=(const iterator& rhs) ;
+							bool operator!=(const iterator& rhs) const;
 
 							/**@title Operador += iterator
 							*@brief operador que vai somar o iterator apontado pelo this com o iterator de referencia colocado após o operador
@@ -100,18 +101,18 @@ namespace sc{
 						 	* @return iterator */
 							
 							iterator operator-=(const iterator& rhs);
-
+						};
 							/**@title Função iteradora do último valor
 							* @param valor vazio
 						 	* @return o valor da última posição do vector */
 							
-							const T& back();
+							const T& back() const;
 
 							/**@title Função iteradora do primeiro valor
 							* @param valor vazio
 						 	* @return o valor da primeira posição do vector */
 							
-							const T& front();
+							const T& front() const;
 							
 							/**@title Função do operador []
 							* @param size_type pos
@@ -129,19 +130,19 @@ namespace sc{
 							* @param vazio
 						 	* @return capacidade do vector */
 							
-							size_type size();
+							size_type size() const;
 
 							/**@title Função que mostra o tamanho do vector
 							* @param size_type pos
 						 	* @return tamanho do vector */
 							
-							size_type capacity();
+							size_type capacity() const;
 							
 							/**@title Função que verificar se a lista tá vazia ou não
 							* @param void
 						 	* @return true se vazia ou false caso não */
 							
-							bool empty();
+							bool empty() const;
 							
 							/**@title Função que esvazia o vector
 							* @param void */
@@ -199,13 +200,13 @@ namespace sc{
 							* @param void
 						 	* @return void */
 							
-							const_iterator cbegin() const;
+							//const_iterator cbegin() const;
 							
 							/**@title Função que mostra o const iterator referente a última posição
 							* @param void
 						 	* @return void */
 							
-							const_iterator cend() const;
+							//const_iterator cend() const;
 							
 							/**@title Função insert que insere value na posição anterior à apontada pelo iterator
 							* @param iterator pos e const T& value
@@ -217,6 +218,7 @@ namespace sc{
 							* @param iterator pos e InItr first, InItr last
 						 	* @return O iterator apontando pra nova posição seguinte à do range */
 							
+							template<typename InItr>
 							iterator insert( iterator pos, InItr first, InItr last);
 							
 							/**@title Função insert que insere uma lista na posição anterior à apontada pelo iterator
@@ -229,7 +231,7 @@ namespace sc{
 							* @param iterator pos 
 						 	* @return O iterator apontando pra nova posição seguinte à do value apagado*/
 							
-							iterato erase( iterator pos );
+							iterator erase( iterator pos );
 							
 							/**@title Função erade que apaga os elementos dentro de um range na posição anterior à apontada pelo iterator
 							* @param iterator first e iterator last
@@ -261,13 +263,13 @@ namespace sc{
 							* @param const vector& rhs
 						 	* @return true caso sejam iguais e false caso não */
 							
-							bool operator==( const vector& rhs );
+							bool operator==( const vector& rhs ) const;
 							
 							/**@title Função booleana que compara diferença entre dois vectors
 							* @param const vector& rhs
 						 	* @return true caso sejam diferentes e false caso não */
 							
-							bool operator!=( const vector& rhs );
+							bool operator!=( const vector& rhs )const;
 							
 							/**@title Constructor de um vector
 							* @param valor nulo e simplório
@@ -287,7 +289,8 @@ namespace sc{
 							* @param InputIt first, InputIt last
 						 	* @return void */
 							
-							vector(InputIt first, InputIt last);
+							template<typename InItr>
+							vector(InItr first, InItr last);
 							
 							/**@title Constructor de referências em um vector
 							* @param const vector& other

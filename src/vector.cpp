@@ -6,7 +6,7 @@
 
 namespace sc{
 
-	template < typename T, size_t SIZE=0 >
+	template < typename T >
 	struct vector{
 
 		typedef T value_type;

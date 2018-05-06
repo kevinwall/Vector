@@ -5,7 +5,7 @@ int main( void )
 	//construtor com lista
 	sc::vector<int> vet_1 = {1, 2, 3, 4};
 	//construtor copia com ranges
-	sc::vector<int> vet_2 (a.begin(),a.end());
+	sc::vector<int> vet_2 (vet_1.begin(),vet_1.end());
 	//construtor default
 	sc::vector<int> vet_3;
 
@@ -50,10 +50,10 @@ int main( void )
 	vet_3.clear();
 
 	//inserindo um lista em vet_1
-	vet_1.insert(it_a, {5, 6});
+	vet_1.insert(vet_1, {5, 6});
 
-	std::cout<<"vet_1 após o insert: "<<std::enld;
-	std::cout<<"[ "
+	std::cout<<"vet_1 após o insert: "<<std::endl;
+	std::cout<<"[ ";
 	for(; beg_vet_1 != vet_1.end(); ++beg_vet_1)
 	{
 		std::cout<< *beg_vet_1 <<" ";
@@ -63,8 +63,8 @@ int main( void )
 	//assign com range
 	vet_3.assign(vet_1.begin(),vet_1.end());
 
-	std::cout<<"Vetor a após o insert: "<<std::enld;
-	std::cout<<"[ "
+	std::cout<<"Vetor a após o insert: "<<std::endl;
+	std::cout<<"[ ";
 	for(; beg_vet_3 != vet_3.end(); beg_vet_3++)
 	{
 		std::cout<< *beg_vet_3 <<" ";
