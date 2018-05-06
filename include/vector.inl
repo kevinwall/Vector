@@ -426,7 +426,37 @@ template < typename T, size_t SIZE=0 >
     			typename vector<T>::iterator vector<T>::erase( typename vector<T>::iterator pos ){
     				assert(pos < cend());
     				return erase(pos,pos+1);
-    			}		
+    			}	
+
+    			template<typename T>
+    			typename vector<T>::iterator vector<T>::assign(typename vector<T>::size_type count, const T & value){
+        			for (size_type i = 0; i< count; i++){
+            			m_data[i] = value;
+        			}
+        			m_size = count;
+				}	
+
+				 template<typename T>
+    			 template <typename InItr>
+					void vector<T>::assign(InItr first, InItr last){
+            		auto i = 0;
+            			
+            		while(first != last){
+                		m_data[i] = *first;
+                		first++;
+                		i++;
+            		}
+            		
+            		m_size = i;
+            		
+					}
+
+    			template<typename T>
+    			void vector<T>::assign(std::initializer_list<T> ilist){
+        		
+        		assign(ilist.begin(), ilist.end());
+        		
+        		}
 
 				//Sobrecarga de operadores
 
