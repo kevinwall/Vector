@@ -50,7 +50,7 @@ int main( void )
 	vet_3.clear();
 
 	//inserindo um lista em vet_1
-	vet_1.insert(vet_1, {5, 6});
+	//vet_1.insert(beg_vet_1, {5, 6});
 
 	std::cout<<"vet_1 após o insert: "<<std::endl;
 	std::cout<<"[ ";

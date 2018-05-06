@@ -364,7 +364,7 @@
 
 					for(; first!= last ; ++first){
 						(*first).~T();
-						cont++
+						cont++;
 					}
 
 					std::memmove(new_first, last, cont*sizeof(T));
