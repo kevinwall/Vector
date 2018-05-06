@@ -1,5 +1,5 @@
-#ifndef vector
-#define vector
+#ifndef Vector
+#define Vector
 
 #include <utility>
 #include <iostream>
@@ -8,8 +8,10 @@
 #include <initializer_list>
 
 namespace sc{
+
+	template<typename T>
 	struct vector{
-		typedef T value_type;
+				typedef T value_type;
 				typedef T* pointer;
 				typedef T& reference;
 				typedef size_t size_type;
@@ -48,6 +50,7 @@ namespace sc{
 							
 							iterator operator-=(const iterator& rhs);
 							
+							template<typename InItr>
 							iterator insert( iterator pos, InItr first, InItr last);
 							
 							iterator insert( iterator pos, std::initializer_list<T> ilist );
@@ -58,7 +61,6 @@ namespace sc{
 							
 							const iterator const_back();
 							
-
 							const iterator const_front();
 							
 							const T& back();
@@ -93,17 +95,18 @@ namespace sc{
 							
 							iterator end();
 							
-							const_iterator cbegin() const;
+							//const_iterator cbegin() const;
 							
-							const_iterator cend() const;
+							//const_iterator cend() const;
 							
 							iterator insert(iterator pos, const T& value);
 							
+							template <typename InItr>
 							iterator insert( iterator pos, InItr first, InItr last);
 							
 							iterator insert(iterator pos, std::initializer_list<T> ilist);
 
-							iterato erase( iterator pos );
+							iterator erase( iterator pos );
 							
 							iterator erase( iterator first, iterator last );
 

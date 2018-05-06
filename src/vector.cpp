@@ -1,8 +1,4 @@
-#include <utility>
-#include <iostream>
-#include <algorithm>
-#include <cstring>
-#include <initializer_list>
+#include "vector.h"
 
 namespace sc{
 
@@ -49,20 +45,10 @@ namespace sc{
 
 	               	iterator operator++(int){
 
-	               		iterator temp( *this ){
-	               			++m_ptr;
-	               			return temp;
-	               		}
-
-	               		pointer temp2 = m_ptr;
+	               		pointer temp = m_ptr;
 	               		++m_ptr;
-	               		return iterator(temp2);
+	               		return iterator(temp);
 
-	               		return m_ptr++;
-
-                		++m_ptr;
-	                	
-	                	return m_ptr-1;
 	                }
 
 	                iterator operator--(){
@@ -129,6 +115,9 @@ namespace sc{
 	             				m_ptr = temp;
 
 	             			}else{
+
+	             				T* temp = new T[m_capacity + ilist.size()];
+
 	             				for( auto i{ilist.begin()} ; i<= ilist.end() ; i++){
 	             					temp[m_size + j] = *i;
 	             					j++;
@@ -175,7 +164,54 @@ namespace sc{
 						--m_size;
 
 						return temp;
-					} 
+					}
+
+    				void assign( size_type count, const T& value )
+    				{
+
+        				for (auto i{0}; i< count; i++)
+        				{
+            				m_data[i] = value;
+        				}
+
+        					m_size = count;
+    				
+    				}
+
+    				template <typename InItr>
+					void assign(InItr first, InItr last)
+					{
+            			size_type list_size = 0;
+
+            			while(first != last)
+            			{
+
+                			m_data[list_size] = *first;
+                			first++;
+                			list_size++;
+            				
+            			}
+            				
+            			m_size = list_size;
+						
+					}
+
+    				void assign(std::initializer_list<T> ilist)
+    				{
+        				//std::copy(ilist.begin(), ilist.end(), &m_data[0]);
+        				auto pointer_list = ilist.begin();
+        				int i = 0;
+
+        				while(pointer_list != ilist.end())
+        				{
+        					m_data[i] = *pointer_list;
+        					pointer_list++;
+        					i++;
+        				}
+
+        				m_size = ilist.size();
+    					
+    				} 
 
 	                /*class const iterator{
             		constructor();
@@ -279,7 +315,7 @@ namespace sc{
 
        				T* temp = new T[m_size];
 
-        			for(auto i{0}; i < m_size; i++)
+        			for(auto i{0}; i < (int)m_size; i++)
         			{
         				temp[i] = m_data[i];
         			}
@@ -288,7 +324,7 @@ namespace sc{
         			m_size = m_size + 1;
         			m_data[0] = value;
         			
-        			for(auto i{1}; i < m_size)
+        			for(auto i{1}; i < (int)m_size; i++)
         			{
         				m_data[i] = temp[i-1];
         			}
@@ -333,7 +369,7 @@ namespace sc{
             		return iterator(&m_data[m_size]);
     			}
 
-    			const_iterator cbegin() const
+    			/*const_iterator cbegin() const
     			{
         			return const_iterator(&m_data[0]);
     			}
@@ -342,6 +378,7 @@ namespace sc{
     			{
         			return const_iterator(&m_data[m_size]);
     			}
+				*/
 
     			iterator insert(iterator pos, const T& value)
     			{
@@ -364,6 +401,7 @@ namespace sc{
 
         			return pos;
     			}
+
     			template <typename InItr>
       			iterator insert( iterator pos, InItr first, InItr last)
       			{
