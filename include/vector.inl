@@ -1,5 +1,3 @@
-#include "vector.h"
-
 template < typename T, size_t SIZE=0 >
 	struct vector{
 
@@ -95,44 +93,7 @@ template < typename T, size_t SIZE=0 >
 	                	return *this; 
 	                }
 
-	                template< typename T >
-        			typename vector<T>::iterator vector<T>::iterator::insert( iterator pos, const T& value ){
-	                		
-	                		
-	                	} 
-
-	               template< typename T >
-        			typename vector<T>::iterator vector<T>::iterator:: insert( iterator pos, std::initializer_list<T> ilist ){
-	                		
-	                		int j = 0;
-
-	                		if( ilist.size() > m_capacity - m_size){
-	                			T* temp = new T[m_capacity + ilist.size()];
-
-	             				for( auto i{0} ; i < (int)m_size ; i++){
-	             					temp[i] = m_ptr[i];
-	             				}
-
-	             				delete [] m_ptr;
-
-	             				for( auto k{ilist.begin()} ; k<= ilist.end() ; k++){
-	             					temp[ilist.size()+j-1] = *k;
-	             					j++;
-	             				}
-
-	             				m_ptr = temp;
-
-	             			}else{
-	             				for( auto i{ilist.begin()} ; i<= ilist.end() ; i++){
-	             					temp[m_size + j] = *i;
-	             					j++;
-	             				}
-
-	             				m_ptr = temp;
-	             			}
-	                		
-	                	} 
-
+	               
 	                /*class const iterator{
             		constructor();
 					~destructor();
@@ -376,28 +337,38 @@ template < typename T, size_t SIZE=0 >
             		return pos;
    				}
 
-   				template<typename T>
-    			typename vector<T>::iterator vector<T>::insert( typename vector<T>::iterator pos, std::initializer_list<T> ilist)
-    			{
-        			auto i = m_size + ilist.size();
-        			reserve(i);
+   				template< typename T >
+        			typename vector<T>::iterator vector<T>::iterator:: insert( iterator pos, std::initializer_list<T> ilist ){
+	                		
+	                		int j = 0;
 
-        			iterator aux = begin();
+	                		if( ilist.size() > m_capacity - m_size){
+	                			T* temp = new T[m_capacity + ilist.size()];
 
-        			auto index = (std::distance(&aux, &pos)/m_size*sizeof(T))-3*sizeof(T);
+	             				for( auto i{0} ; i < (int)m_size ; i++){
+	             					temp[i] = m_ptr[i];
+	             				}
 
-        			value_type new_vector [m_size];
+	             				delete [] m_ptr;
 
-        			std::memmove(new_vector, m_data, m_size*sizeof(T));
+	             				for( auto k{ilist.begin()} ; k<= ilist.end() ; k++){
+	             					temp[ilist.size()+j-1] = *k;
+	             					j++;
+	             				}
 
-        			if(index < m_size){
-            			std::copy(ilist.begin(), ilist.end(), &m_data[index]);
-       				}
-       				
-        			std::memmove(&m_data[index+ilist.size()], new_vector, m_size*sizeof(T));
+	             				m_ptr = temp;
 
-        			return pos;
-    			}	
+	             			}else{
+	             				for( auto i{ilist.begin()} ; i<= ilist.end() ; i++){
+	             					temp[m_size + j] = *i;
+	             					j++;
+	             				}
+
+	             				m_ptr = temp;
+	             			}
+	                		
+	                	} 
+
 
     			template<typename T>
     			typename vector<T>::iterator vector<T>:: erase( typename vector<T>::iterator first, typename vector<T>::iterator last ){

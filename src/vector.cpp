@@ -1,4 +1,8 @@
-#include "vector.h"
+#include <utility>
+#include <iostream>
+#include <algorithm>
+#include <cstring>
+#include <initializer_list>
 
 namespace sc{
 
@@ -45,10 +49,20 @@ namespace sc{
 
 	               	iterator operator++(int){
 
-	               		pointer temp = m_ptr;
-	               		++m_ptr;
-	               		return iterator(temp);
+	               		iterator temp( *this ){
+	               			++m_ptr;
+	               			return temp;
+	               		}
 
+	               		pointer temp2 = m_ptr;
+	               		++m_ptr;
+	               		return iterator(temp2);
+
+	               		return m_ptr++;
+
+                		++m_ptr;
+	                	
+	                	return m_ptr-1;
 	                }
 
 	                iterator operator--(){
@@ -115,9 +129,6 @@ namespace sc{
 	             				m_ptr = temp;
 
 	             			}else{
-
-	             				T* temp = new T[m_capacity + ilist.size()];
-
 	             				for( auto i{ilist.begin()} ; i<= ilist.end() ; i++){
 	             					temp[m_size + j] = *i;
 	             					j++;
@@ -164,7 +175,7 @@ namespace sc{
 						--m_size;
 
 						return temp;
-					}
+					} 
 
 	                /*class const iterator{
             		constructor();
@@ -268,7 +279,7 @@ namespace sc{
 
        				T* temp = new T[m_size];
 
-        			for(auto i{0}; i < (int)m_size; i++)
+        			for(auto i{0}; i < m_size; i++)
         			{
         				temp[i] = m_data[i];
         			}
@@ -277,7 +288,7 @@ namespace sc{
         			m_size = m_size + 1;
         			m_data[0] = value;
         			
-        			for(auto i{1}; i < (int)m_size; i++)
+        			for(auto i{1}; i < m_size)
         			{
         				m_data[i] = temp[i-1];
         			}
@@ -322,7 +333,7 @@ namespace sc{
             		return iterator(&m_data[m_size]);
     			}
 
-    			/*const_iterator cbegin() const
+    			const_iterator cbegin() const
     			{
         			return const_iterator(&m_data[0]);
     			}
@@ -331,7 +342,6 @@ namespace sc{
     			{
         			return const_iterator(&m_data[m_size]);
     			}
-				*/
 
     			iterator insert(iterator pos, const T& value)
     			{
@@ -354,7 +364,6 @@ namespace sc{
 
         			return pos;
     			}
-
     			template <typename InItr>
       			iterator insert( iterator pos, InItr first, InItr last)
       			{
@@ -537,8 +546,8 @@ namespace sc{
         //Membros especiais da classe.
 		private:
 			pointer m_data;
-			size_type m_size = 0;
-			size_type m_capacity = 0;
+			size_type m_size;
+			size_type m_capacity;
 	};
 }
 
