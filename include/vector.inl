@@ -354,26 +354,20 @@
     			template<typename T>
     			typename vector<T>::iterator vector<T>:: erase( typename vector<T>::iterator first, typename vector<T>::iterator last ){
     					
-    				auto i(0),j(0);
     				value_type new_vector [m_size];
+    				int cont = 0;
+    				auto new_first = first;
 
     				assert(first <= last);
 					assert(last <= end());
 					assert(first < end());
 
-					if (first == last) {
-						return begin() + std::distance(begin(), first);
-					}else{
-						if(m_data[i] != *first){
-							new_vector[j] = m_data[i];
-							j++;
-						}else{
-							m_size--;
-						}
-						i++;
-						first++;
+					for(; first!= last ; ++first){
+						(*first).~T();
+						cont++
 					}
-					return first;
+
+					std::memmove(new_first, last, cont*sizeof(T));
     			}
 
     			template<typename T>
