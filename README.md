@@ -4,7 +4,7 @@ Esse projeto teve como objetivo a implementação do sc::vector, um vetor semelh
 
 # Forma de Execução: #
 
-Para compilar o código, basta acessar a pasta src e digitar "make all" no seu terminal (Distribuições linux)
+Para compilar o código, basta acessar a pasta do repositório e digitar  "make" no seu terminal (Distribuições linux)
 
 # Programas Utilizados: #
 
